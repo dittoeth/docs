@@ -29,7 +29,7 @@ export default defineConfig({
     // footer: {}
   },
   rewrites: {
-    // 'Technical/contracts.md': 'contracts.md',
+    // 'technical/contracts.md': 'contracts.md',
   },
 });
 
@@ -57,27 +57,6 @@ function sidebar(): DefaultTheme.SidebarItem[] {
           link: "/litepaper",
         },
         {
-          text: "FAQ",
-          link: "/faq",
-        },
-      ],
-    },
-    {
-      text: "DAO",
-      items: [
-        { text: "Ditto Token", link: "/dao/ditto" },
-        {
-          text: "Parameters",
-          link: "/dao/parameters",
-        },
-      ],
-    },
-
-    {
-      text: "Technical",
-      items: [
-        { text: "Contracts", link: "/technical/contracts" },
-        {
           text: "Concepts",
           link: "/technical/concepts",
         },
@@ -85,6 +64,23 @@ function sidebar(): DefaultTheme.SidebarItem[] {
           text: "System Lifecycle",
           link: "/technical/lifecycle",
         },
+        {
+          text: "Glossary",
+          link: "/glossary",
+        },
+        {
+          text: "FAQ",
+          link: "/faq",
+        },
+      ],
+    },
+    {
+      text: "Technical",
+      items: [
+        { 
+          text: "Contracts", 
+          link: "/technical/contracts"
+          },
         {
           text: "Oracles",
           link: "/technical/oracles",
@@ -112,6 +108,16 @@ function sidebar(): DefaultTheme.SidebarItem[] {
         {
           text: "Misc",
           link: "/technical/misc",
+        },
+      ],
+    },
+    {
+      text: "DAO",
+      items: [
+        { text: "Ditto Token", link: "/dao/ditto" },
+        {
+          text: "Parameters",
+          link: "/dao/parameters",
         },
       ],
     },

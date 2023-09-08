@@ -2,7 +2,7 @@
 
 ## Collateral
 
-Collateral is an asset that a borrower pledges as a security for a loan. This asset backs the pegged asset that is tied to the debt. The system accepts ETH Liquid Staking Derivatives (LSDs) as collateral.
+Collateral is an asset that a borrower pledges as a security for a loan. This asset backs the pegged asset that is tied to the debt. The system accepts ETH Liquid Staking Tokens (LSTs) as collateral.
 
 ## CR
 
@@ -12,9 +12,9 @@ Collateral Ratio. The ratio between the collateral and the debt for a position. 
 
 ERC-20 (Ethereum Request for Comment 20) is a technical standard for fungible tokens. The system uses this for zETH and the other stable assets.
 
-## LSD
+## LST
 
-Liquid Staking Derivatives are ERC-20 tokens that are issued by staking providers or yield generating protocols. These tokenized IOUs allow users to both earn yield from staking on their ETH and still retain liquidity.
+Liquid Staking Tokens are ERC-20 tokens that are issued by staking providers or yield generating protocols. These tokenized IOUs allow users to both earn yield from staking on their ETH and still retain liquidity. (LSD is a similar concept which stands for Liquid Staking Derivatives)
 
 ## shortRecord
 
@@ -30,4 +30,4 @@ A token that targets a particular price index, whether 1 USD, or 1 EUR, etc. A p
 
 ## zETH
 
-A token that is 1:1 value of ETH, similar to WETH and is the main ERC-20 asset of the system used to make Bid or Short Orders. Although zETH is mainly backed by a basket of LSDs, yield can only be extracted when a trader is in a short position. Thus it is theoretically possible a shorter can earn more yield per unit of zETH they are collateralizing with.
+A token that is 1:1 value of ETH, similar to WETH and is the main ERC-20 asset of the system used to make Bid or Short Orders. Although zETH is mainly backed by a basket of LSTs, yield can only be extracted when a trader is in a short position. Thus it is theoretically possible a shorter can earn more yield per unit of zETH they are collateralizing with.

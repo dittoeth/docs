@@ -2,7 +2,7 @@
 
 ## Abstract
 
-DittoETH is a decentralized pegged asset issuance protocol built on Ethereum. The asset protocol is built with the original principals of cryptocurrencies, offering censorship resistance, neutrality, custody-less, and permissionless trades and collateral management. Pegged assets or DittoAssets are collateralized by ETH, or liquid staking derivatives (LSD) of ETH, as opposed to using an endogenous collateral. DittoETH is inspired by the original implementation of Bitshares in creating what was previously called polymorphic digital assets (PMDA). Bitshares was the first project to create these synthetic pegged assets, specifically by using orderbooks.
+DittoETH is a decentralized pegged asset issuance protocol built on Ethereum. The asset protocol is built with the original principals of cryptocurrencies, offering censorship resistance, neutrality, custody-less, and permissionless trades and collateral management. Pegged assets or DittoAssets are collateralized by ETH, or liquid staking tokens (LST) of ETH, as opposed to using an endogenous collateral. DittoETH is inspired by the original implementation of Bitshares in creating what was previously called polymorphic digital assets (PMDA). Bitshares was the first project to create these synthetic pegged assets, specifically by using orderbooks.
 
 DittoETH can support pegged assets for fiat currencies, cryptocurrencies (long and short) and commodities. In order for users to issue pegged assets, a high collateralization of staked ETH must be locked in the contract to maintain protocol solvency and price stability.
 
@@ -46,7 +46,7 @@ The additional yield can only be achieved because DittoETH has chosen to use an 
 
 ## Staked ETH as Collateral
 
-All DittoAssets are backed by staked ETH LSDs. These pegged assets are minted when shorters take their staked ETH, in the form of zETH, and matches on the orderbook with a long position that desires the DittoAsset.
+All DittoAssets are backed by staked ETH LSTs. These pegged assets are minted when shorters take their staked ETH, in the form of zETH, and matches on the orderbook with a long position that desires the DittoAsset.
 
 ## How Assets Work
 

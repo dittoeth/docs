@@ -4,7 +4,7 @@ There are two potential black swan scenarios that we account for to mitigate dam
 
 1. **Global:** when the underlying collateral (like stETH, rETH) is worth less than the equivalent amount of ETH. (ex: stETH drops in value compared to ETH).
 
-   It's not safe to assume that LSD ETH is worth `1:1` to ETH, even if most of the time it is. The risk of something like stETH de-pegging (as in the [past](https://www.nansen.ai/research/on-chain-forensics-demystifying-steth-depeg)) is less when withdrawals are open, but there is still smart contract risk. This kind of assumption was also broken with USDC given the events surrounding SVB.
+   It's not safe to assume that LST ETH is worth `1:1` to ETH, even if most of the time it is. The risk of something like stETH de-pegging (as in the [past](https://www.nansen.ai/research/on-chain-forensics-demystifying-steth-depeg)) is less when withdrawals are open, but there is still smart contract risk. This kind of assumption was also broken with USDC given the events surrounding SVB.
 
 2. **Local:** when ETH drops in value compared to the asset being minted (ex: ETH compared to `USD`) to the point where enough `shortRecords` become undercollateralized to break the price peg of the stable asset.
 
@@ -12,7 +12,7 @@ There are two potential black swan scenarios that we account for to mitigate dam
 
 The system does two things in this scenario:
 
-- Prevents yield from being updated if the ETH value of the underlying LSD in a `Vault` is lower than the last saved value
+- Prevents yield from being updated if the ETH value of the underlying LST in a `Vault` is lower than the last saved value
 - If `zethTotalNew <= zethTotal`, haircut anyone that exits the system (on withdraw)
 
 > **Note**: There is no haircut for withdrawing ETH directly (`withdrawEth()`) because given the queue, someone that is entering the system by calling `depositEth` takes their place (replacing their collateral 1:1).

@@ -11,7 +11,7 @@ hero:
       text: Litepaper
       link: /litepaper
     - theme: alt
-      text: Technical Docs
+      text: Technical Docs (wip)
       link: /technical/ob
     - theme: brand
       text: CodeHawks Audit (ongoing)
