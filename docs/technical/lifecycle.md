@@ -17,7 +17,7 @@ The cUSD market will be the first of many on DittoETH. The following example wil
 ### Exiting
 
 - Once created, users are able to remove zETH / cUSD from the system and mint the respective ERC-20 equivalents via `withdrawzETH` & `withdrawAsset` in `VaultFacet`.
-  - This will allow users to create liquidity on external protocols such as Uniswap, Curve, ect.
+  - This will allow users to create liquidity on external protocols such as Uniswap, Curve, etc.
 - Another way to exit the system is to redeem zETH for ETH or the underlying LSTs. This can occur one of two ways in `BridgeRouterFacet`:
   - `unstakeEth` requests unstaking from an LST protocol, trading the LST for ETH.
   - `withdraw` gives the user the LST directly.
