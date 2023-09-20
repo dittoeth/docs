@@ -1,0 +1,19 @@
+/* larger width for blog pages, +224px */
+.VPDoc:not(.has-sidebar).has-aside .content-container,
+.VPDoc:not(.has-sidebar).has-aside .content {
+  /* max-width: 688px;  */
+  min-width: 912px !important;
+}
+.VPDoc:not(.has-sidebar).has-aside .container {
+  /* max-width: 1104px;  */
+  max-width: 1328px !important;
+}
+
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(
+    120deg,
+    #673e94,
+    #6d78b9
+  );
+}
