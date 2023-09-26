@@ -80,7 +80,7 @@ CR = -----------------------
      debt * getOraclePrice()
 ```
 
-- Short orders are required to be over-collateralized (above 1 CR), unlike a bid or short. The minimum ratio that is required for a short Order is at least `initialMargin`, which is saved to each `Order`. (ex: `if (ethEscrowed < shortEth * initialMargin) revert`)
+- Short orders are required to be over-collateralized (above 1 CR), unlike a bid or ask. The minimum ratio that is required for a short Order is at least `initialMargin`, which is saved to each `Order`. (ex: `if (ethEscrowed < shortEth * initialMargin) revert`)
 - The system allows the shorter to specify the CR so that it fits between `initialMargin < CR < MAX CR`.
 
 > **Note**: Short orders can be made at any limit price, but `shortRecords` are to be created at or above oracle price due to the constraint that assets should be minted at or above oracle price.
