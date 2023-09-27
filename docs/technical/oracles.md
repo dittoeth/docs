@@ -2,7 +2,7 @@
 
 The value of all DittoAssets in the DittoETH system is determined by oracles that push price feeds on-chain. The price feeds are primarily supplied by Chainlink's independent node operators.
 
-DittoETH has a unique mechanism for updating the oracle price. It caches the latest Chainlink spot priceto substantially save on gas, while doing so frequently enough to ensure appropriate freshness. Users trading on the orderbook will update the oracle price, while providing "hints" to the backend corresponding to the correct index to match or place a limit order on the table. Thus, certain trades made will play a role in helping update the "hint" index for the next possible trade near the price feed.
+DittoETH has a unique mechanism for updating the oracle price. It caches the latest Chainlink spot price to substantially save on gas, while doing so frequently enough to ensure appropriate freshness. Users trading on the orderbook will update the oracle price, while providing "hints" to the backend corresponding to the correct index to match or place a limit order on the table. Thus, certain trades made will play a role in helping update the "hint" index for the next possible trade near the price feed.
 
 Ultimately the purpose of using an oracle price feed at all is to fix the minting and burning of pegged assets to the actual price of the targeted asset. Because of these rules, DittoAssets are minted at the oracle price or better. Conversely, these assets are burned at the appropriate price when margin calls are performed.
 
@@ -49,8 +49,8 @@ Since the system is heavily dependent on oracles, data validity is paramount. Th
 
 Broadly speaking, there are two categories of circuit breaking events:
 
-1. Invalid fetch data from Chainlink
-2. Large price deviation between Chainlink and the system's cached oracle price
+1. Invalid fetch data from Chainlink.
+2. Large price deviation between Chainlink and the system's cached oracle price.
 
 ### Invalid Fetch Data
 
