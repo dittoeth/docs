@@ -21,11 +21,11 @@ To keep gas down, struct packing is employed. `Order` is 2 slots.
 - `ercAmount`: `uint88` is a max of 300m. Don't expect orders higher than this. Can also just make multiple orders instead.
 - `price`: `uint80` is max of 1.2m. This would be the price of the asset in terms of ETH, so it's reasonable to expect an order to never pass anything higher.
 - `id`, `prevId`, `nextId`: Order id uses `uint16` (65536). Because order ids are reuseable, it's not expected to have that many on the orderbook at once without matching.
-- `orderType`: The Order type as of most the recent action
-- `prevOrderType`: The Order type before the most recent action. (Example: Re-using a matched id for a LimitBid shows the `orderType` is LimitBid, while the `prevOrderType` is Matched; likewise for a previously Cancelled Order)
+- `orderType`: The Order type as of most the recent action.
+- `prevOrderType`: The Order type before the most recent action. (Example: Re-using a matched id for a LimitBid shows the `orderType` is LimitBid, while the `prevOrderType` is Matched; likewise for a previously Cancelled Order).
 - `initialMargin` (Short): Over-collateralization requirement for shorts.
 - `shortRecordId` (Short): Corresponding `shortRecord` id if the Short order isn't fully matched (it overwrites the same `shortRecord` position rather than create a new one)
-- `addr`: The user's address
+- `addr`: The user's address.
 - `creationTime`: Timestamp of when an order is created in seconds.
 
 ```solidity
@@ -80,7 +80,7 @@ CR = -----------------------
      debt * getOraclePrice()
 ```
 
-- Short orders are required to be over-collateralized (above 1 CR), unlike a bid or short. The minimum ratio that is required for a short Order is at least `initialMargin`, which is saved to each `Order`. (ex: `if (ethEscrowed < shortEth * initialMargin) revert`)
+- Short orders are required to be over-collateralized (above 1 CR), unlike a bid or short. The minimum ratio that is required for a short Order is at least `initialMargin`, which is saved to each `Order`. (ex: `if (ethEscrowed < shortEth * initialMargin) revert`).
 - The system allows the shorter to specify the CR so that it fits between `initialMargin < CR < MAX CR`.
 
 > **Note**: Short orders can be made at any limit price, but `shortRecords` are to be created at or above oracle price due to the constraint that assets should be minted at or above oracle price.
@@ -123,12 +123,12 @@ If `initialMargin` is 5, shorters are providing 5x as much zETH as the bidder (1
 `shortRecord` is also 2 slots.
 
 - `collateral`: `uint88` is a max of 300m. collateral is denominated in ETH.
-- `ercDebt`: `uint88` to match `Order.ercAmount`
-- `status`: `uint8` enum to show whether a short is partially filled (meaning there is still a corresponding short order that isn't completely filled on the orderbook), filled, or closed
-- `id`, `prevId`, `nextId`: id, uses `uint8` (255). Similar to order id but because this is per address, doesn't need to be so large
-- `zethYieldRate`: `uint80` is a max of 1.2m. Tracks the current yield rate for this `shortRecord`, which is updated with `distributeYield`
-- `ercDebtRate`: `uint64` is a max of 18x. Tracks if a penalty needs to be applied across all `shortRecords` if the system isn't able to handle the debt
-- `tokenId`: `uint40` is a max of 1T (no decimals since it's a count). Used to track which NFT a `shortRecord` corresponds with
+- `ercDebt`: `uint88` to match `Order.ercAmount`.
+- `status`: `uint8` enum to show whether a short is partially filled (meaning there is still a corresponding short order that isn't completely filled on the orderbook), filled, or closed.
+- `id`, `prevId`, `nextId`: id, uses `uint8` (255). Similar to order id but because this is per address, doesn't need to be so large.
+- `zethYieldRate`: `uint80` is a max of 1.2m. Tracks the current yield rate for this `shortRecord`, which is updated with `distributeYield`.
+- `ercDebtRate`: `uint64` is a max of 18x. Tracks if a penalty needs to be applied across all `shortRecords` if the system isn't able to handle the debt.
+- `tokenId`: `uint40` is a max of 1T (no decimals since it's a count). Used to track which NFT a `shortRecord` corresponds with.
 - `flaggerId`: `uint24` is a max of 16m. Instead of saving the flagger address, an id is used to look up the address.
 - `updatedAt`: `uint24` holds hours. This just tracks the last time a `shortRecord` was modified (created, increaseCollateral, etc), which is used to deal with getting yield via flash loan.
 
@@ -169,8 +169,8 @@ The `shortRecord` saves the amount of debt the user owes in `ercDebt`, as well a
 
 Short functions:
 
-- `increaseCollateral()`: add more to the position by taking from your `ethEscrowed`
-- `decreaseCollateral()`: remove collateral from position, which increases your `ethEscrowed`
+- `increaseCollateral()`: add more to the position by taking from your `ethEscrowed`.
+- `decreaseCollateral()`: remove collateral from position, which increases your `ethEscrowed`.
 - `combineShorts()`: uses a weighted average to combine multiple `ShortRecords` into one, as it's easier to manage fewer positions. Having fewer positions lowers the gas costs of getting yield, which loops over each `shortRecord`.
 - `exitShort()`: a user can decrease their `ercDebt`, and potentially leave the position entirely to get back the underlying collateral.
 
@@ -178,8 +178,8 @@ Short functions:
 
 Events are emitted when a `shortRecord` is created and removed to track the list of addresses that should be liquidatable.
 
-- `ShortRecordCreated` when a `shortRecord` by a user is created at index i
-- `ShortRecordDeleted` when a `shortRecord` by a user is deleted at index i
+- `ShortRecordCreated` when a `shortRecord` by a user is created at index i.
+- `ShortRecordDeleted` when a `shortRecord` by a user is deleted at index i.
 
 These events can be used by an indexer service to determine a list of shorters and thus a list of `shortRecords` that are margin callable. There should be a query that gives back a sorted list of positions by CR, from lowest to highest. This could be used by a front-end to margin call positions or by bots.
 
@@ -318,7 +318,7 @@ While re-using ids greatly reduces the chance of hitting the ~65,000 limit, ther
 To prevent anybody from abusing this ability, there are heavy restrictions in place:
 
 1. This can only be called when the order id > 65,000. Rational market participants are expected to place orders that have reasonable likelihood to be matched, so it is unlikely that order ids ever reach this level.
-2. The DAO cannot cancel more than 1000 orders
-3. Non-DAO users can only cancel the last order
+2. The DAO cannot cancel more than 1000 orders.
+3. Non-DAO users can only cancel the last order.
 
 Given the restrictions, it is unlikely that this function is ever called. However, its existence will effectively deter attackers from attempting to spam the network. Combined with the fact that each order requires a minimum ETH amount, it will be uneconomical for an attacker.
