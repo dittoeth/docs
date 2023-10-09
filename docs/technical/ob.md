@@ -124,7 +124,7 @@ If `initialMargin` is 5, shorters are providing 5x as much zETH as the bidder (1
 
 - `collateral`: `uint88` is a max of 300m. collateral is denominated in ETH.
 - `ercDebt`: `uint88` to match `Order.ercAmount`.
-- `status: `uint8` enum to show whether a short is partially filled (meaning there is still a corresponding short order that isn't completely filled on the orderbook), filled, or closed.
+- `status`: `uint8` enum to show whether a short is partially filled (meaning there is still a corresponding short order that isn't completely filled on the orderbook), filled, or closed.
 - `id`, `prevId`, `nextId`: id, uses `uint8` (255). Similar to order id but because this is per address, doesn't need to be so large.
 - `zethYieldRate`: `uint80` is a max of 1.2m. Tracks the current yield rate for this `shortRecord`, which is updated with `distributeYield`.
 - `ercDebtRate`: `uint64` is a max of 18x. Tracks if a penalty needs to be applied across all `shortRecords` if the system isn't able to handle the debt.
