@@ -21,9 +21,7 @@ Any actions related to shorts attempt to check the latest Oracle price. To save 
 
 The saved oracle price is updated if:
 
-- `createLimitBid()` and it's 1hr past the saved oracle time.
-- `createForcedBid()` (exit short, liquidation) and it's 15min past the saved oracle time.
-- `decreaseCollateral()` or `createLimitShort()` and it's 15 min past the saved oracle time.
+- `createLimitBid()` or `createForcedBid()` via (exit short, liquidate) are called and it's 15min past the saved oracle time.
 - `createLimitBid()` or `createLimitShort()` is about to match and price is outside of the chainlink price window of 0.5%.
 
 This 15 minute window for forced bid is necessary to ensure the protocol is still functioning during periods of high volatility and network congestion. The protocol is at risk of becoming under-collateralized if the oracle price cannot update during a period of high congestion. Therefore, updating the oracle more frequently is particularly important for liquidations.
@@ -51,7 +49,7 @@ The following are checked regarding incoming Chainlink data:
 2. `timeStamp == 0`
 3. `price <= 0`
 4. `timeStamp > block.timestamp` (Implies Chainlink data is coming from the future)
-5. `timeStamp > block.timestamp + 2 hours` (stale Data: Chainlink has not updated a round in over 2 hours)
+5. `timeStamp + 2 hours < block.timestamp` (stale Data: Chainlink has not updated a round in over 2 hours)
 
 If any of these checks are triggered, price defaults to using the TWAP values.
 

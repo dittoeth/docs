@@ -2,7 +2,7 @@
   "dependencies": {
     "markdown-it-footnote": "^3.0.3",
     "markdown-it-mathjax3": "^4.3.2",
-    "vitepress": "^1.0.0-rc.20"
+    "vitepress": "^1.0.0-rc.45"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",

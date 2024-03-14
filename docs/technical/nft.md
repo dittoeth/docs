@@ -11,10 +11,10 @@ DittoEth combines the ERC-721 standard with the diamond proxy standard by making
 To mint an NFT, the following criteria must be met:
 
 1. The market must not be frozen.
-2. The `shortRecord` must be valid (i.e. the `shortRecord` ID must be between 2 and their max number of shortRecords, `shortRecord` must not be closed)
+2. The `shortRecord` must be valid (i.e. the `shortRecord` ercDebt must be > 0, `shortRecord` must not be closed)
 3. The `shortRecord` must not already have a non-zero `tokenId`
 
-The system does not permit minting the last `shortRecord` of a shorter (id = 254) since the last `shortRecord` of a shorter is reserved for [special behavior](../technical/misc#shortrecord-id-dos-protection). The system relies on `shortRecord.tokenId` to mark whether an NFT of a short has been minted. Each NFT minted is assigned a unique `tokenId` based on a global `tokenIdCounter`. This counter monotonically increases and never decreases. `tokenIdCounter` is a uint40 because the assumption is that it will never hit the max value of ~1T. For reference, Ethereum had ~2B total tx as of 2023 and NFT transaction is a small fraction of that.
+The system relies on `shortRecord.tokenId` to mark whether an NFT of a short has been minted. Each NFT minted is assigned a unique `tokenId` based on a global `tokenIdCounter`. This counter monotonically increases and never decreases. `tokenIdCounter` is a uint40 because the assumption is that it will never hit the max value of ~1T. For reference, Ethereum had ~2B total tx as of 2023 and NFT transaction is a small fraction of that.
 
 The ownership of the NFT is tracked by the `nftMapping`.
 
@@ -28,15 +28,16 @@ Minting an NFT `shortRecord` using `tokenIdCounter`
 s.nftMapping[s.tokenIdCounter] = STypes.NFT({
   owner: msg.sender,
   assetId: s.asset[asset].assetId,
-  shortRecordId: shortRecordId
+  shortRecordId: shortRecordId,
+  uint16 shortOrderId;
 });
 ```
 
 ### Transferring NFT
 
-DittoEth allows a shorter to transfer their `shortRecord` to another address only if the `shortRecord` has a corresponding NFT. A `shortRecord` cannot be transferred if the `shortRecord` is flagged for liquidation, could be flagged for liquidation, or is `Closed`.
+DittoEth allows a shorter to transfer their `shortRecord` to another address only if the `shortRecord` has a corresponding NFT. A `shortRecord` cannot be transferred if the `shortRecord` is `Closed` or if its ercDebt is zero (being fully redeemed on).
 
-The `shortRecord` is deleted from the transferrer and is re-created under the ownership of the recipient. Likewise with minting, a user cannot receive the NFT if they have 254 active `shortRecords`.
+The `shortRecord` is deleted from the transferrer and is re-created under the ownership of the recipient. Note that the recipient can only receive the NFT if they have enough space in the `shortRecords` mapping.
 
 Additionally, the transferrer must claim yield prior to transferring or else they forfeit it.
 

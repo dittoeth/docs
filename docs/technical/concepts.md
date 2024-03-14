@@ -14,15 +14,15 @@ Stable assets require proper backing (not under or fractional collateralization)
 
 MakerDAO's CDP (collateralized debt position) is "one sided" in the sense that a single user locks collateral to generate their stable asset, DAI.
 
-This system uses an _orderbook_ to match buy and sell sides (thus two sided) to create a stable asset. A buyer takes their ETH with the intent of getting the stable asset (dUSD, Ditto USD). A [shorter](../overview/glossary#shorter) takes their ETH with the intent of getting the yield of their collateral in addition to the extra collateral of the buyer as well as taking a lended sell position against USD.
+This system uses an _orderbook_ to match buy and sell sides (thus two sided) to create a stable asset. A buyer takes their ETH with the intent of getting the stable asset (dUSD, Ditto USD). A [shorter](../overview/glossary#shorter) takes their ETH with the intent of getting the yield of their collateral in addition to the extra collateral of the buyer as well as taking a lended sell position against USD. The orderbook model allows for the shorter to be incredibly [efficient](../technical/misc#Capital) with their provided collateral.
 
 ## Vaults
 
 A `Vault` can hold many stable assets. All assets in the same `Vault` are collateralized by the same basket of underlying LSTs.
 
 - ETH and LST, as well as assets issued by the protocol, can enter and exit the system via the `VaultFacet`
-  - On withdrawal, ERC-20 tokens are minted and `ethEscrowed` / `ercEscrowed` are decreased
-  - Conversely, upon deposit these ERC-20 tokens are burned and `ethEscrowed` / `ercEscrowed` are increased
+  - On withdrawal, ERC-20 tokens are minted and `ercEscrowed` are decreased
+  - Conversely, upon deposit these ERC-20 tokens are burned and `ercEscrowed` are increased
 - `Vaults` are tracked as uints, where constant ONE is `Vault = 1`
 - There is only a single `Vault` at launch, but a new `Vault` can be made with `createVault`
 
@@ -72,11 +72,11 @@ The initial launch will support [stETH](https://docs.lido.fi/guides/steth-integr
 
 These are the functions of `BridgeRouterFacet`, which allow depositing and withdrawing ETH and ETH LSTs.
 
-| Function   | Token           | Internal Accounting | Fee                    |
-| ---------- | --------------- | ------------------- | ---------------------- |
-| depositEth | -ETH            | +ethEscrowed        |                        |
-| deposit    | -stETH or -rETH | +ethEscrowed        |                        |
-| withdraw   | -stETH or -rETH | -ethEscrowed        | `Bridge.withdrawalFee` |
+| Function   | Token           | Internal Accounting | Fee                                         |
+| ---------- | --------------- | ------------------- | ------------------------------------------- |
+| depositEth | -ETH            | +ethEscrowed        |                                             |
+| deposit    | -stETH or -rETH | +ethEscrowed        |                                             |
+| withdraw   | -stETH or -rETH | -ethEscrowed        | `Bridge.withdrawalFee` + stETH/rETH premium |
 
 **Depositing:**
 
@@ -85,5 +85,7 @@ These are the functions of `BridgeRouterFacet`, which allow depositing and withd
 
 **Withdrawing:**
 
-- `withdraw()`: decreases `VaultUser.ethEscrowed` and gives you the LST specified, subject to `Bridge.withdrawalFee`
+- `withdraw()`: decreases `VaultUser.ethEscrowed` and gives you the LST specified, subject to `Bridge.withdrawalFee` and stETH/rETH premium for LST withdrawn past credit balance
 - _`withdrawTapp()`_: a special function protected by `onlyOwner` which enables the diamond owner to withdraw dETH fees accrued to the `TAPP` as LST
+
+> **Note**: `Bridge.withdrawalFee` planned to launch at 0%, likely to remain 0% and solely rely on stETH/rETH premium fees to prevent arbitrage.

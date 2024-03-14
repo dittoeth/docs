@@ -30,28 +30,24 @@
 - **nonReentrantView**: Reentrancy guard for view functions. Only applicable for protocols integrating with DittoETH.
 - **onlyDiamond**: Checks that the caller is the diamond contract. This is to give privileged access to certain external functions.
 
-  | **_onlyDAO_**     | **_onlyAdminOrDAO_**      | **_nonReentrantView_**  | **_onlyDiamond_**   |
-  | ----------------- | ------------------------- | ----------------------- | ------------------- |
-  | withdrawTapp      | shutdownMarket            | getDethTotal            | deposit (bridge)    |
-  | transferOwnership | cancelOrderFarFromOracle  | getCollateralRatio      | depositEth (bridge) |
-  | setVault          | transferAdminship         | getAssetCollateralRatio | withdraw (bridge)   |
-  | createBridge      | setTithe                  | getBids                 | createForcedBid     |
-  | deleteBridge      | setDittoMatchedRate       | getAsks                 |                     |
-  | createMarket      | setDittoShorterRate       | getShorts               |                     |
-  | diamondCut¹       | setInitialCR              | getShortIdAtOracle      |                     |
-  |                   | setPrimaryLiquidationCR   | getShortRecords         |                     |
-  |                   | setSecondaryLiquidationCR | getShortRecord          |                     |
-  |                   | setForcedBidPriceBuffer   | getShortCountOf         |                     |
-  |                   | setMinimumCR              | getDethBalance          |                     |
-  |                   | setResetLiquidationTime   | getAssetBalance         |                     |
-  |                   | setSecondLiquidationTime  | getUndistributedYield   |                     |
-  |                   | setFirstLiquidationTime   | getYield                |                     |
-  |                   | setTappFeePct             | getDittoMatchedReward   |                     |
-  |                   | setCallerFeePct           | getDittoReward          |                     |
-  |                   | setMinAskEth              |                         |                     |
-  |                   | setMinBidEth              |                         |                     |
-  |                   | setMinShortErc            |                         |                     |
-  |                   | setWithdrawalFee          |                         |                     |
+  | **_onlyDAO_**     | **_onlyAdminOrDAO_**     | **_nonReentrantView_**  | **_onlyDiamond_**   |
+  | ----------------- | ------------------------ | ----------------------- | ------------------- |
+  | withdrawTapp      | shutdownMarket           | getDethTotal            | deposit (bridge)    |
+  | transferOwnership | cancelOrderFarFromOracle | getCollateralRatio      | depositEth (bridge) |
+  | setVault          | transferAdminship        | getAssetCollateralRatio | withdraw (bridge)   |
+  | createBridge      | setTithe                 | getBids                 | createForcedBid     |
+  | deleteBridge      | setDittoMatchedRate      | getAsks                 |                     |
+  | createMarket      | setDittoShorterRate      | getShorts               |                     |
+  | diamondCut¹       | setInitialCR             | getShortIdAtOracle      |                     |
+  |                   | setLiquidationCR         | getShortRecords         |                     |
+  |                   | setMinAskEth             | getShortRecord          |                     |
+  |                   | setForcedBidPriceBuffer  | getShortCountOf         |                     |
+  |                   | setPenaltyCR             | getDethBalance          |                     |
+  |                   | setWithdrawalFee         | getAssetBalance         |                     |
+  |                   | setMinShortErc           | getUndistributedYield   |                     |
+  |                   | setMinBidEth             | getYield                |                     |
+  |                   | setTappFeePct            | getDittoMatchedReward   |                     |
+  |                   | setCallerFeePct          | getDittoReward          |                     |
 
   ¹ onlyDAO is enforced via `enforceIsContractOwner()` in `LibDiamond.sol`
 
@@ -81,7 +77,6 @@
   | **_exitShort()_**                | ✅                 | ✅                |                           |                      | ✅                         |
   | **_exitShortErcEscrowed()_**     | ✅                 | ✅                |                           |                      | ✅                         |
   | **_exitShortWallet()_**          | ✅                 | ✅                |                           |                      | ✅                         |
-  | **_flagShort()_**                | ✅                 | ✅                |                           |                      | ✅                         |
   | **_increaseCollateral()_**       | ✅                 | ✅                |                           |                      | ✅                         |
   | **_liquidate()_**                | ✅                 | ✅                |                           |                      | ✅                         |
   | **_liquidateSecondary()_**       | ✅                 | ✅                |                           | ✅                   |                            |

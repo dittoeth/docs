@@ -2,29 +2,6 @@
 
 Technical concepts that don't readily fit into any other category and/or temporary staging place for ideas to be placed in another section later
 
-## shortRecord Id DOS Protection
-
-`shortRecordIdCounter` is a uint8 (max 255) for struct packing/gas saving purposes but can overflow relatively easily. A malicious actor can create the max number of shortRecords and prevent matching by flooding the orderbook with short orders that overflow `shortRecordIdCounter` upon creation of the next `shortRecord`.
-
-To counteract this behavior the `shortRecord` in position 254 is modified/blended anytime a new `shortRecord` would have been created with a `shortRecordIdCounter` greater than 254. Usage is restricted to 254 (as opposed to 255) for the following reasons:
-
-1. Position 255 can be used as a flag and `shortRecordIdCounter` can completely stay within uint8. This avoids needing to use uint16 in memory which can introduce new errors. In other words, instead of having to check `uint16 id < 256` the smaller check `uint8 id < 255` is used because the last position 255 is sacrificed.
-2. Within the function `createShortRecord()` in LibShortRecord.sol if 255 is a valid `shortRecordIdCounter` then the function would need to add checks for if `shortRecord` 255 is being created for the first time or simply being modified. When position 255 is instead only used as a flag, the function automatically knows that the `shortRecord` in position 254 is already created and can call `fillShortRecord()` appropriately.
-
-The design choice to always modify the `shortRecord` in position 254 (as opposed to whatever is next to HEAD) reduces the complexity and gas costs associated with `setShortRecordIds()` function in LibShortRecord.sol. If any `shortRecord` in the position of `HEAD.nextId` can be filled by overflow `shortOrders` then every `shortRecord` can potentially be modified by multiple `shortOrders.` To prevent this, only the `shortRecord` in position 254 is modifiable by multiple `shortOrders`. This way the function `setShortRecordIds()` can operate under the simple assumption that (for every `shortRecordIdCounter` besides id 254) only one `shortOrder` points to one `shortRecord`. To account for the special treatment of `shortRecordIdCounter` 254 the natural re-use of `shortRecordIdCounter` 254 is prohibited even after it has been closed, eliminating the need to implement extra logic regarding `prevId/nextId` specifically for `shortRecordIdCounter` 254. Additionally, reserving position 254 allows a user to always know where "overflow" `shortOrders` will be filled.
-
-Note that the max number of distinct shortRecords per address is 253 (254 - SHORT_STARTING_ID + 1).
-
-## Combine flagged shortRecords
-
-There are no flag restrictions on `combineShorts()` but if there is a flag on any of the `shortRecords`, the resulting c-ratio must be high enough to remove the flag. The purpose is to prevent a user from prematurely removing a flag from a `shortRecord` by combining it with another non-flagged `shortRecord`.
-
-However, if a `shortRecord` is eligible to be flagged but hasn't been, there are no c-ratio requirements for the resulting `shortRecord` for these reasons:
-
-1. Many low CR `shortRecords` vs 1 doesn't make a difference to the health of the system
-2. Having fewer low CR `shortRecords` is actually better and easier to manage/liquidate
-3. A user might want to increase the collateral for all of their flaggable `shortRecords` at once (after combining)
-
 ## Note about Ditto rates
 
 The amount of ditto tokens minted in a given time period is virtually guaranteed be less than the total amount of ditto tokens available to mint for these reasons:
@@ -39,9 +16,9 @@ One potential drawback to using DittoETH is infrequent yield rate updates. Yield
 
 1. Preventing yield distributions to newly created/modified `shortRecords` by use of `ShortRecord.updatedAt`. This primarily protects against flash loans.
 2. When calling `increaseCollateral()` the constant `CRATIO_MAX` is checked to prevent collateral stuffing.
-3. Forcing yield updates when large amounts of ETH are deposited into any of the bridges. While this doesn't eliminate the risk of a user creating multiple smaller deposits under the established thresholds, it does add complexity and cost to a potential abuser. The thresholds include `BRIDGE_YIELD_UPDATE_THRESHOLD` - where the `updateYield()` call only happens once DittoETH has reached a certain level of maturity (ie. 1000 ether) based on `dethTotal` - and `BRIDGE_YIELD_PERCENT_THRESHOLD` which defines a large deposit as a certain % of `dethTotal` in a `Vault.`
+3. Forcing yield updates when large amounts of ETH are deposited into any of the bridges. While this doesn't eliminate the risk of a user creating multiple smaller deposits under the established thresholds, it does add complexity and cost to a potential abuser. The thresholds include `BRIDGE_YIELD_UPDATE_THRESHOLD`, where the `updateYield()` call only happens once DittoETH has reached a certain level of maturity (ie. 1000 ether) based on `dethTotal`, and `BRIDGE_YIELD_PERCENT_THRESHOLD` which defines a large deposit as a certain % of `dethTotal` in a `Vault.`
 
-> **Note**: It's possible for `dethYieldRate` (uint80) to overflow at 1.2M x LST rewards per unit of `dethCollateral`. At expected steady state volume this should not be a problem, although in the incipient stages of release where there is very little `dethCollateral` it is possible to "use up" a large portion of `dethYieldRate`. However, this may also be unlikely as LST rewards will also be very small soon after release.
+> **Note**: It's possible for `dethYieldRate` (uint80) to overflow at 1.2M x LST rewards per unit of `dethCollateral`. At expected steady state volume this should not be a problem, although it is possible to "use up" a large portion of `dethYieldRate` in the incipient stages of release where there is very little `dethCollateral`. However, this may also be unlikely as LST rewards will also be very small soon after release.
 
 ## Orderbook Dust
 
@@ -49,15 +26,68 @@ Two concepts of "dust" exist within the orderbook.
 
 The first is a minimum order amount which is the smallest amount of ETH that must be contained in any order type in order to be sent or added to the orderbook. There is a `minAskEth` and a `minBidEth` as well as a `minShortErc`. These minimums are necessary to reduce the gas costs of matching against a bunch of smaller order amounts or unnecessary spam orders. These values are also checked against previous orders that have already been placed on the orderbook and are being partially matched. However, the restriction is relaxed by `Constants.DUST_FACTOR` so that limit orders are guaranteed to match at least some significant portion of the original requested amount. Otherwise, limit orders even 1 wei beneath `minAskEth` or `minBidEth` would be unfairly removed.
 
+Scenario:
+
+- There are one bid existing on the orderbook with `ercAmount` of 2000 at oracle price
+- An incoming ask appears at the same price but with a slightly lower `ercAmount` at 1999
+- The orders match since they have the same price and the ask order is completely filled
+- Normally, the bid would leave behind any `ercAmount` unfilled. In this case, 1 `ercAmount` is too low to leave behind.
+- Thus, the remaining bid is cancelled and the bidder gets the remaining ETH back in their escrow
+- But if the remaining bid ETH is >= the `minBidEth * Constants.DUST_FACTOR`, then the remaining bid can be left on the orderbook
+
 The second is slightly more complicated and only arises after partial matches of an incoming order. An incoming order may satisfy the minimum requirements but after a partial match can have a small amount of `ercAmount` left. In this case when `ercAmount * price` rounds down to 0 `ethFilled` will be propagated through the algorithms in `LibOrders.sol` and `BidOrdersFacet.sol` as 0 and can cause unintended consequences, especially for parts of the code that rely on the assumption that `ethFilled > 0.` For this reason, any remaining dust amounts defined as `ercAmount * price == 0` (less than 1 wei) are removed from the orderbook.
 
 ## Small shortRecords
 
-One potential issue for the system is the existence of small `shortRecords` with unhealthy CR that are unattractive to liquidators because of small fee payouts. To mitigate this scenario, the following features discourage and/or prevent holding a `shortRecord` with small amounts of collateral:
+The existence of small `shortRecords` (low `ercAmount`) with unhealthy CR would be unattractive to liquidators because of small fee payouts. 
+
+To mitigate this scenario, the following features discourage and/or prevent holding a `shortRecord` with small amounts of collateral:
 
 - `minShortErc` and `minAskEth` on order creation
-- `exitShort()` partial must leave at least `minBidEth` collateral (since primary liquidation uses `createForcedBid()`)
-- `decreaseCollateral()` must leave at least `minBidEth` collateral (coming soon)
-- `distributeYield()` checks `minBidEth` collateral and prevents collection of yield while under the threshold. However, yield still accrues and is accessible once collateral >= `minBidEth` so that holders of `PartialFill` SR are not punished (coming soon)
+- Partial `exitShort()` must leave at least `minBidEth` collateral (since primary liquidation uses `createForcedBid()`)
 
-> **Note**: `minBidEth` is used because holders of `shortRecords` could fall below `minShortErc` when the price of ETH rises relative to the underlying asset and honest users reallocate capital.
+There are also cases where small `shortRecords` are created unintentionally. While the system requires the shorter to create a short order with `minShortErc`, it cannot control for situations where the order is partially matched. Here are some possible scenarios:
+
+- Scenario 1: A shorter creates a short order at/above `minShortErc`. An incoming bid partially matches with the short order, which creates a `shortRecord` under `minShortErc`. The shorter cancels the short order before the rest can be filled. As a result, there is now a `shortRecord` under `minShortErc` in the system causing the issues highlighted above. More `shortRecords` like this continue to exist in the system, leading to accumulation of bad debt.
+- Scenario 2: Like scenario 1, a short order is partially matched by an incoming bid. This time, the created `shortRecord` is above `minShortErc`, but the remaining short order's `ercAmount` is below `minShortErc`. The shorter then exit's the short position (or is liquidated) before the the remaining short order can be filled. As a result, there is now a short order under `minShortErc` on the orderbook. When that short order is filled, it will create a brand new `shortRecord` under `minShortErc`, resulting in the same problem as scenario 1.
+
+> **Note**: Partial matching orders are expected to be a common occurrence, thus it is prudent to prevent `shortRecords` under `minShortErc` from impacting the system
+
+The system solves for these issues mainly by automatically cancelling short orders that are under `minShortErc`. If the short order is under `minShortErc`, cancelling a short order via `cancelShort()` will increase the `ercDebt` and `collateral` of the corresponding `shortRecord` to the level of `minShortErc`. Secondly, first check if the corresponding short order's `ercAmount` is under `minShortErc` or will be under after the call in functions that delete `shortRecords` (i.e. `exitShort`, `liquidate`, `combineShorts` ...etc). If so, cancel the short order prior to deleting the `shortRecord`. This removes the possibility of a new `shortRecord` under `minShortErc` being formed.
+
+## dUSD trading at discount
+
+Normally, the redemption mechanism should be enough to restore parity. One reason that dUSD may still sell at a discount even with ongoing redemptions is because redemptions are only permitted for `shortRecords` under 2 CR. ShortRecords also can't be liquidated via primary/secondary liquidation when CR levels are too high. If dUSD holders continue to want to sell to get ETH, especially when ETH price is increasing, they would be willing to sell dUSD under oracle price, creating a discount.
+
+As a fallback, the system dynamically checks for the discount deviation from the saved oracle price and increases the `dethTitheMod` value accordingly. This changes the amount of yield shorters can earn. The higher the deviation, the lower the yield shorters receive, which may lead some shorters to `exitShort` and create a `forcedBid` on the orderbook and match against the discounted dUSD. When users are matching back at acceptable levels (<1% of the saved oracle price), the tithe will return back to normal.
+
+> **Note**: The loss of yield should dampen the demand for dETH, bringing the relationship between dUSD and dETHback into parity.
+
+Depending on the discount, the tithe is updated using continuous values instead of discrete. The table below only shows the discrete cutoffs to provide high level understanding.
+
+| Discount | Tithe |
+| -------- | ----- |
+| < 1%     | 10%   |
+| 1% - 2%  | 32.5% |
+| 2% - 3%  | 55%   |
+| 3% - 4%  | 77.5% |
+| >= 4%    | 100%  |
+
+## Recovery Mode
+
+Ditto has a similar mechanism to Liquity's [Recovery Mode](https://docs.liquity.org/faq/recovery-mode). At a high level, Liquity tracks the total collateral of the system (TCR) so that when it goes under 150%, it kicks into Recovery Mode, which liquidates a Trove at 150% instead of 110% to incentivize users to bring the TCR back to 150%.
+
+In Ditto, each asset (i.e dUSD) has it's own `recoveryCR`. Rather than having a mode that turns on or off, Ditto adds a few checks:
+
+- **Allow**: Primary and Secondary Liquidations can occur at higher than the usual margin call level (up to the `recoveryCR`) if the total `assetCR` is itself lower than the `recoveryCR`
+- **Prevent**:
+  - Creating a Limit Short Order: if it's created at a CR that makes the total CR low enough to hit recovery mode
+  - Decreasing Collateral: if it's lowers the total CR low enough to hit recovery mode
+
+## Capital Efficiency
+
+`createLimitShort` allows a user to input a custom `shortOrderCR` which specifies the CR that the shorter wants to provide. 
+
+In the future, DittoETH will have the ability for `shortRecords` to be created at lower CRs, as low as 110%. This can be done safely when the TAPP has enough funds to handle undercollateralized bad debt. Once in place, a shorter at the minimum would only need to put up 10% of collateral to match on the orderbook, creating a leveraged position of 10X. This comes from the distinct advantage that an orderbook has over a CDP because of the efficiency of having two separate users bring the capital for minting Ditto Assets. 
+
+`Asset.initialCR` represents the lowest CR that a short record can be created at, taking into account the funds provided by both the bidder and shorter on match. So if the `Asset.initialCR` is 1.7, then a new shorter can provide a minimum of 0.7 CR to satisfy the constraint, given that the bidder is always providing 1 CR of ETH, since they want the equivalent amount of dUSD for their ETH. The `shortRecord's` initial CR will then be whatever the shorter provided plus the 100% that came from the bidder. This ability for `shortRecords` to become highly leveraged will be a powerful tool for traders who want to speculate on the price of ETH rising.

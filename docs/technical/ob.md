@@ -10,7 +10,7 @@ The system is a central limit orderbook, with the addition of the Limit Short or
 - Limit Ask + Market Ask (`createAsk()`)
 - Limit Short (no Market Short) (`createLimitShort()`)
 
-> **Note**: Orders have a minimum ETH amount (`price * amount`): `if (eth < MIN_ETH) revert Errors.OrderUnderMinimumSize()`. This prevents small orders from clogging up the Orderbook.
+> **Note**: Orders have a minimum ETH amount (`price * amount`): `if (eth < minBidEth (or minAskEth)) revert Errors.OrderUnderMinimumSize()`. This prevents small orders from clogging up the Orderbook.
 
 This minimum check is done for incoming Orders as well as existing ones, so new orders cannot be smaller than a certain amount, and matched limit orders are removed from the OB if the remaining amount is too small.
 
@@ -22,33 +22,34 @@ To keep gas down, struct packing is employed. `Order` is 2 slots.
 - `price`: `uint80` is max of 1.2m. This would be the price of the asset in terms of ETH, so it's reasonable to expect an order to never pass anything higher.
 - `id`, `prevId`, `nextId`: Order id uses `uint16` (65536). Because order ids are reuseable, it's not expected to have that many on the orderbook at once without matching.
 - `orderType`: The Order type as of most the recent action.
-- `prevOrderType`: The Order type before the most recent action. (Example: Re-using a matched id for a LimitBid shows the `orderType` is LimitBid, while the `prevOrderType` is Matched; likewise for a previously Cancelled Order).
-- `initialCR` (Short): Over-collateralization requirement for shorts.
-- `shortRecordId` (Short): Corresponding `shortRecord` id if the Short order isn't fully matched (it overwrites the same `shortRecord` position rather than create a new one)
-- `addr`: The user's address.
 - `creationTime`: Timestamp of when an order is created in seconds.
+- `addr`: The user's address.
+- `prevOrderType`: The Order type before the most recent action. (Example: Re-using a matched id for a LimitBid shows the `orderType` is LimitBid, while the `prevOrderType` is Matched; likewise for a previously Cancelled Order).
+- `shortOrderCR` (Short): This is only the CR accounting for what is provided by shorter. `shortOrderCR` + 1x CR from the bidder on match equals the `initialCR`
+- `shortRecordId` (Short): Corresponding `shortRecord` id if the Short order isn't fully matched (it overwrites the same `shortRecord` position rather than create a new one)
 
 ```solidity
 // 2 slots
 struct Order {
-    // SLOT 1: 88 + 80 + 16 + 16 + 16 + 32 = 256
-    uint88 ercAmount; // max 300m erc
-    uint80 price; // max 1.2m eth
-    // max orders 65k, with id re-use
-    uint16 prevId;
-    uint16 id;
-    uint16 nextId;
-    O orderType;
-    // @dev diff against contract creation timestamp to prevent overflow in 2106
-    uint32 creationTime; // seconds
-    // SLOT 2: 160 + 8 + 16 + 8 = 192 (64 unused)
-    address addr; // 160
-    O prevOrderType;
-    // @dev storing as 170 with 2 decimals -> 1.70 ether
-    uint16 initialCR; // @dev only used for LimitShort
-    uint8 shortRecordId; // @dev only used for LimitShort
-    uint64 filler;
-}
+      // SLOT 1: 88 + 80 + 16 + 16 + 16 + 8 + 32 = 256
+      uint88 ercAmount; // max 300m erc
+      uint80 price; // max 1.2m eth
+      // max orders 65k, with id re-use
+      uint16 prevId;
+      uint16 id;
+      uint16 nextId;
+      O orderType;
+      // @dev diff against contract creation timestamp to prevent overflow in 2106
+      uint32 creationTime; // seconds
+      // SLOT 2: 160 + 8 + 16 + 8 = 192 (64 unused)
+      address addr; // 160
+      O prevOrderType;
+      // @dev storing as 170 with 2 decimals -> 1.70 ether
+      uint16 shortOrderCR; // @dev CR from the shorter only used for limit short
+      uint8 shortRecordId; // @dev only used for LimitShort
+      uint64 filler;
+    }
+
 ```
 
 ## Short Orders
@@ -59,10 +60,10 @@ When a bid and short `Order` match, it will create/modify a debt position called
 
 The difference is that the shorter doesn't gain the stable asset, rather the bidder gains it. However, the shorter does get the bidder's collateral as a part of their shorter position, and thus the yield since the collateral is staked.
 
-| User    | Brings           | Receives      | Claim to Yield |
-| ------- | ---------------- | ------------- | -------------- |
-| Bidder  | dETH             | stable asset  | None           |
-| Shorter | dETH x initialCR | `shortRecord` | Yes            |
+| User    | Brings              | Receives      | Claim to Yield |
+| ------- | ------------------- | ------------- | -------------- |
+| Bidder  | dETH                | stable asset  | None           |
+| Shorter | dETH x shortOrderCR | `shortRecord` | Yes            |
 
 Notes:
 
@@ -91,7 +92,7 @@ In the example below, assume the current oracle price is **10.5**. Bids are sort
 | ---- | ---- | ------ |
 | 10   | 13   | 12     |
 | 9    | 12   | 11     |
-| 8    | 11   | --9--  |
+| 8    | 11   | 9      |
 | 7    | 11   | 8      |
 | 6    | 10.6 | 7      |
 
@@ -129,8 +130,6 @@ If `initialCR` is 2, shorters are providing 2x as much dETH as the bidder (1x dE
 - `dethYieldRate`: `uint80` is a max of 1.2m. Tracks the current yield rate for this `shortRecord`, which is updated with `distributeYield`.
 - `ercDebtRate`: `uint64` is a max of 18x. Tracks if a penalty needs to be applied across all `shortRecords` if the system isn't able to handle the debt.
 - `tokenId`: `uint40` is a max of 1T (no decimals since it's a count). Used to track which NFT a `shortRecord` corresponds with.
-- `flaggerId`: `uint24` is a max of 16m. Instead of saving the flagger address, an id is used to look up the address.
-- `flaggedAt`: `uint32` holds seconds. This only tracks flagging times for primary liquidation.
 - `updatedAt`: `uint32` holds seconds. This tracks the last time a `shortRecord` was modified (created, increaseCollateral, etc) to determine yield eligibility as a defense against exploitative flash loans.
 
 ```solidity
@@ -141,15 +140,15 @@ struct ShortRecord {
     uint88 collateral; // price * ercAmount * initialCR
     uint88 ercDebt; // same as Order.ercAmount
     uint80 dethYieldRate;
-    // SLOT 2: 64 + 40 + 32 + 24 + 8 + 8 + 8 + 8 = 184 (64 remaining)
+    // SLOT 2: 64 + 40 + 32 + 8 + 8 + 8 + 8 = 168 (88 remaining)
     SR status;
     uint8 prevId;
     uint8 id;
     uint8 nextId;
     uint64 ercDebtRate; // socialized penalty rate
     uint32 updatedAt; // seconds
-    uint32 flaggedAt; // seconds
-    uint24 flaggerId;
+    // uint32 proposedAt; // seconds
+    // uint88 ercRedeemed;
     uint40 tokenId; // As of 2023, Ethereum had ~2B total tx. Uint40 max value is 1T, which is more than enough
 }
 ```
@@ -313,12 +312,11 @@ In summary, the gas savings from re-using ids (if an order is 2 slots) are as fo
 
 ## Cancelling Spam Orders
 
-While re-using ids greatly reduces the chance of hitting the ~65,000 limit, there is always a risk of adversarial attack that attempts to prevent market operations. Specifically, attackers might try to spam the network with small orders. To mitigate this completely, the system allows for anybody to cancel the last order in a given orderbook via `cancelOrderFarFromOracle()`. The DAO can also call this function, to an even greater effect.
+While re-using ids greatly reduces the chance of hitting the ~65,000 limit, there is always a risk of adversarial attack that attempts to prevent market operations. Specifically, attackers might try to spam the network with small orders. To mitigate this, the DAO is allowed to cancel the last order in a given orderbook via `cancelOrderFarFromOracle()`.
 
-To prevent anybody from abusing this ability, there are heavy restrictions in place:
+To prevent abuse, there are heavy restrictions in place:
 
 1. This can only be called when the order id > 65,000. Rational market participants are expected to place orders that have reasonable likelihood to be matched, so it is unlikely that order ids ever reach this level.
 2. The DAO cannot cancel more than 1000 orders.
-3. Non-DAO users can only cancel the last order.
 
 Given the restrictions, it is unlikely that this function is ever called. However, its existence will effectively deter attackers from attempting to spam the network. Combined with the fact that each order requires a minimum ETH amount, it will be uneconomical for an attacker.

@@ -51,7 +51,7 @@ When ETH value as collateral drops precipitously and the `TAPP` has low amounts 
 - `short.collateral` is added to `s.vaultUser[m.vault][address(this)].ethEscrowed` (where address(this) = TAPP) and checked against `m.ethDebt`, where `m.ethDebt = m.short.ercDebt.mul(m.oraclePrice).mul(m.forcedBidPriceBuffer + m.tappFeePct + m.callerFeePct)`. This checks against the worst case scenario of a forced bid match at `oraclePrice * forcedBidPriceBuffer` and the subsequent fees. If this condition is not met, `ercDebt` is removed from the `shortRecord` to the point where a worst case forced bid can be guaranteed fulfillment. Thus, `tappFee`, `callerFee` and the possibility of a full liquidation are guaranteed by the removal of `ercDebt`.
 - The `ercDebt` removed from the `shortRecord` is then socialized among all remaining `shortRecords` of the asset orderbook by an increased `ercDebtRate`.
 
-Assuming `minimumCR = 1.1, forcedBidPriceBuffer = 1.1, tappFee = 2.5%, callerFee = 0.5%, CR Combined = ethEscrowed (short collateral + Tapp balance) against ercDebt, loseCollateral = shorter loses leftover collateral`:
+Assuming `penaltyCR = 1.1, forcedBidPriceBuffer = 1.1, tappFee = 2.5%, callerFee = 0.5%, CR Combined = ethEscrowed (short collateral + Tapp balance) against ercDebt, loseCollateral = shorter loses leftover collateral`:
 
 | Short     | TAPP     | CR Combined | Description           | loseCollateral |
 | --------- | -------- | ----------- | --------------------- | -------------- |
@@ -59,11 +59,11 @@ Assuming `minimumCR = 1.1, forcedBidPriceBuffer = 1.1, tappFee = 2.5%, callerFee
 | CR = 1.12 | CR = 0   | 1.12\*      | ercDebtSocialized > 0 | Yes            |
 | CR = 0.90 | CR = 0.5 | 1.40        | ercDebtSocialized = 0 | Yes            |
 
-> **Note**: It is possible for a shorter to be penalized at a CR higher than the minimumCR when the TAPP is low or empty in order to guarantee liquidation execution. In the highly unlikely scenario of a low/empty TAPP, it is arguable that the market has already entered black swan territory, hence the over-conservative reallocation of ercDebt to save the asset peg. See (\*)
+> **Note**: It is possible for a shorter to be penalized at a CR higher than the penaltyCR when the TAPP is low or empty in order to guarantee liquidation execution. In the highly unlikely scenario of a low/empty TAPP, it is arguable that the market has already entered black swan territory, hence the over-conservative reallocation of ercDebt to save the asset peg. See (\*)
 
 ### Emergency Market Shutdown
 
-In the event a market cannot be salvaged by redistributing bad debt to other `shortRecords`, the DITTO admin or DITTO DAO can permanently freeze that market by calling `shutdownMarket` once the CR of the entire asset breaches the threshold set by `minimumCR`.
+In the event a market cannot be salvaged by redistributing bad debt to other `shortRecords`, the DITTO admin or DITTO DAO can permanently freeze that market by calling `shutdownMarket` once the CR of the entire asset breaches the threshold set by `penaltyCR`.
 
 - It is assumed that `shutdownMarket` will be called shortly after the c-ratio of the asset falls since the last saved Oracle price before freezing is used to facilitate asset conversions back to dETH.
 - It is in the best interest of asset holders to freeze the market and guarantee redemptions closer to par. Due to the time sensitivity of a volatile market move, both the admin and DAO can call this function.
@@ -76,7 +76,7 @@ amtDeth = amtErc * price * assetCR;
 
 - `amtErc` can be redeemed from one of or both Wallet balance and Escrow balance
 - price is the last saved oracle price
-- if `assetCR` is between 1 and `minimumCR > 1`, collateral is sent to TAPP to make `assetCR = 1`
+- if `assetCR` is between 1 and `penaltyCR > 1`, collateral is sent to TAPP to make `assetCR = 1`
 - `assetCR` less than 1 is unmodified
 
 The redemption mechanism functions similarly to the secondary liquidation methods which allow redemptions of asset from wallets and escrowed balances. However, instead of targeting a specific `shortRecord`, all of the collateralized dETH is bundled together into one singular balance whereby asset holders can make automatic redemptions based on the frozen price and assetCR. Due to market closure, there is no need to track individual `shortRecords` and at this point all shorter collateral is lost. To reinstate the asset orderbook, a new contract will need to be established.
