@@ -175,8 +175,16 @@ function sidebar(): DefaultTheme.SidebarItem[] {
           link: "/technical/liquidation",
         },
         {
+          text: "Redemptions",
+          link: "/technical/redemptions"
+        },
+        {
           text: "ShortRecord NFT",
           link: "/technical/nft",
+        },
+        {
+          text: "Arbitrage",
+          link: "/technical/arbitrage"
         },
         {
           text: "Black Swan",

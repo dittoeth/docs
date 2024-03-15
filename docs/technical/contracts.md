@@ -30,24 +30,30 @@
 - **nonReentrantView**: Reentrancy guard for view functions. Only applicable for protocols integrating with DittoETH.
 - **onlyDiamond**: Checks that the caller is the diamond contract. This is to give privileged access to certain external functions.
 
-  | **_onlyDAO_**     | **_onlyAdminOrDAO_**     | **_nonReentrantView_**  | **_onlyDiamond_**   |
-  | ----------------- | ------------------------ | ----------------------- | ------------------- |
-  | withdrawTapp      | shutdownMarket           | getDethTotal            | deposit (bridge)    |
-  | transferOwnership | cancelOrderFarFromOracle | getCollateralRatio      | depositEth (bridge) |
-  | setVault          | transferAdminship        | getAssetCollateralRatio | withdraw (bridge)   |
-  | createBridge      | setTithe                 | getBids                 | createForcedBid     |
-  | deleteBridge      | setDittoMatchedRate      | getAsks                 |                     |
-  | createMarket      | setDittoShorterRate      | getShorts               |                     |
-  | diamondCut¹       | setInitialCR             | getShortIdAtOracle      |                     |
-  |                   | setLiquidationCR         | getShortRecords         |                     |
-  |                   | setMinAskEth             | getShortRecord          |                     |
-  |                   | setForcedBidPriceBuffer  | getShortCountOf         |                     |
-  |                   | setPenaltyCR             | getDethBalance          |                     |
-  |                   | setWithdrawalFee         | getAssetBalance         |                     |
-  |                   | setMinShortErc           | getUndistributedYield   |                     |
-  |                   | setMinBidEth             | getYield                |                     |
-  |                   | setTappFeePct            | getDittoMatchedReward   |                     |
-  |                   | setCallerFeePct          | getDittoReward          |                     |
+  | **_onlyDAO_**     | **_onlyAdminOrDAO_**     | **_nonReentrantView_**      | **_onlyDiamond_**   |
+  | ----------------- | ------------------------ | --------------------------- | ------------------- |
+  | withdrawTapp      | shutdownMarket           | getDethTotal                | deposit (bridge)    |
+  | transferOwnership | cancelOrderFarFromOracle | getCollateralRatio          | depositEth (bridge) |
+  | setVault          | transferAdminship        | getCollateralRatioSpotPrice | withdraw (bridge)   |
+  | createBridge      | setTithe                 | getAssetCollateralRatio     | createForcedBid     |
+  | deleteBridge      | setDittoMatchedRate      | getBids                     |                     |
+  | createMarket      | setDittoShorterRate      | getAsks                     |                     |
+  | diamondCut¹       | setInitialCR             | getShorts                   |                     |
+  |                   | setLiquidationCR         | getShortIdAtOracle          |                     |
+  |                   | setMinAskEth             | getShortRecord              |                     |
+  |                   | setForcedBidPriceBuffer  | getShortRecords             |                     |
+  |                   | setPenaltyCR             | getShortRecordCount         |                     |
+  |                   | setWithdrawalFee         | getDethBalance              |                     |
+  |                   | setMinShortErc           | getAssetBalance             |                     |
+  |                   | setMinBidEth             | getUndistributedYield       |                     |
+  |                   | setTappFeePct            | getYield                    |                     |
+  |                   | setCallerFeePct          | getDittoMatchedReward       |                     |
+  |                   | setRecoveryCR            | getDittoReward              |                     |
+  |                   |                          | getAssetUserStruct          |                     |
+  |                   |                          | getAssetStruct              |                     |
+  |                   |                          | getVaultUserStruct          |                     |
+  |                   |                          | getVaultStruct              |                     |
+  |                   |                          | getBridgeStruct             |
 
   ¹ onlyDAO is enforced via `enforceIsContractOwner()` in `LibDiamond.sol`
 
@@ -65,6 +71,8 @@
   | **_cancelOrderFarFromOracle()_** | ✅                 |                   |                           | ✅                   |                            |
   | **_cancelShort()_**              | ✅                 |                   |                           | ✅                   |                            |
   | **_claimDittoMatchedReward()_**  | ✅                 |                   |                           |                      |                            |
+  | **_claimRedemption()_**          | ✅                 | ✅                |                           |                      |                            |
+  | **_claimRemainingCollateral()_** | ✅                 | ✅                |                           |                      |                            |
   | **_combineShorts()_**            | ✅                 | ✅                |                           |                      | ✅                         |
   | **_createAsk()_**                | ✅                 | ✅                |                           | ✅                   |                            |
   | **_createBid()_**                | ✅                 | ✅                |                           | ✅                   |                            |
@@ -73,6 +81,7 @@
   | **_deposit()_**                  | ✅                 |                   |                           |                      |                            |
   | **_depositAsset()_**             | ✅                 | ✅                |                           | ✅                   |                            |
   | **_depositEth()_**               | ✅                 |                   |                           |                      |                            |
+  | **_disputeRedemption()_**        | ✅                 | ✅                |                           |                      |                            |
   | **_distributeYield()_**          | ✅                 |                   |                           | ✅ ¹                 |                            |
   | **_exitShort()_**                | ✅                 | ✅                |                           |                      | ✅                         |
   | **_exitShortErcEscrowed()_**     | ✅                 | ✅                |                           |                      | ✅                         |
@@ -80,6 +89,7 @@
   | **_increaseCollateral()_**       | ✅                 | ✅                |                           |                      | ✅                         |
   | **_liquidate()_**                | ✅                 | ✅                |                           |                      | ✅                         |
   | **_liquidateSecondary()_**       | ✅                 | ✅                |                           | ✅                   |                            |
+  | **_proposeRedemption()_**        | ✅                 | ✅                |                           |                      |                            |
   | **_redeemErc()_**                | ✅                 |                   | ✅                        |                      |                            |
   | **_shutdownMarket()_**           | ✅                 | ✅                |                           | ✅                   |                            |
   | **_updateYield()_**              | ✅                 |                   |                           |                      |                            |

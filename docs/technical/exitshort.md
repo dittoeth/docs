@@ -7,7 +7,7 @@ A user can decrease their `ercDebt`, and potentially leave the `shortRecord` pos
 General Restrictions:
 
 - Shorter can only exit a valid amount (greater than 0 and less than/equal to total ercDebt of short)
-- Cannot exit in a way that leaves behind the minimum amount of ETH
+- Cannot exit in a way that leaves behind the minimum amount of ETH or less than `minShortErc`
 - Can only exit if the CR of the `shortRecord` increases
 - Can only primary exit `FullyFilled` SR (prevents possible error of matching with own short order in the case of `PartialFill` SR)
 
