@@ -46,6 +46,10 @@ export default defineConfig({
               text: "Contracts",
               link: "/contracts",
             },
+            {
+              text: "Audits",
+              link: "/audits",
+            },
           ],
         },
         {
@@ -109,10 +113,6 @@ function nav(): DefaultTheme.NavItem[] {
       text: "UI",
       link: "https://preview.dittoeth.com",
     },
-    {
-      text: "Audit",
-      link: "https://www.codehawks.com/contests/clm871gl00001mp081mzjdlwc",
-    },
   ];
 }
 
@@ -140,6 +140,10 @@ function sidebar(): DefaultTheme.SidebarItem[] {
         {
           text: "Contracts",
           link: "/contracts",
+        },
+        {
+          text: "Audits",
+          link: "/audits",
         },
       ],
     },
