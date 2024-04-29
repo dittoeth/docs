@@ -36,9 +36,17 @@ The per second rate of ditto token generation for shorters.
 
 ERC-20 (Ethereum Request for Comment 20) is a technical standard for fungible tokens. The system uses this for dETH and the other stable assets.
 
+## ercEscrowed
+
+`AssetUser.ercEscrowed` tracks the amount of stable asset for a user. It refers to stablecoins like dUSD (which is an ERC-20). This is virtually accounted for because the ERC itself is also minted when withdrawing from the system and burned when depositing into it.
+
 ## ethDebt
 
 During a primary liquidation this amount represents the upper bound on the `ercDebt` converted to ETH at the current oracle price after accounting for fees and the `forcedBidPriceBuffer`.
+
+## ethEscrowed
+
+`VaultUser.ethEscrowed` virtually tracks the amount of ETH collateral for a user: increases when depositing ETH or LST via the Bridges like rETH/stETH, and decreases when withdrawing. The ETH itself is stored in the Bridges for each LST.
 
 ## forcedBidPriceBuffer
 
