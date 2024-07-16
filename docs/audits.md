@@ -1,5 +1,10 @@
 # Audits
 
+## Code4rena (7/5/24-7/15/24)
+
+- [Audit page](https://code4rena.com/audits/2024-07-dittoeth-invitational)
+- Results WIP
+
 ## Code4rena (3/15/24-4/5/24)
 
 - [Audit page](https://code4rena.com/audits/2024-03-dittoeth)
@@ -13,4 +18,4 @@
 
 ## CDSecurity (July 2023)
 
-Worked with CDSecurity on a pre-codehawks audit
+- Worked with CDSecurity on a Pre-CodeHawks audit

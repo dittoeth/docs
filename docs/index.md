@@ -20,11 +20,11 @@ hero:
       text: Contract Addresses
       link: /contracts
     - theme: brand
-      text: Latest Audit (Code4rena - April 2024)
-      link: https://code4rena.com/audits/2024-03-dittoeth
+      text: Latest Audit (Code4rena - July 2024)
+      link: https://code4rena.com/audits/2024-07-dittoeth-invitational
     - theme: brand
-      text: CodeHawks Audit
-      link: https://www.codehawks.com/contests/clm871gl00001mp081mzjdlwc
+      text: Audits
+      link: /audits
     - theme: brand
       text: Frontend (preview)
       link: https://preview.dittoeth.com

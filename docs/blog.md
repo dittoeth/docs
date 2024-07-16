@@ -1,5 +1,9 @@
 # Blog
 
+## New Features
+
+- [#1: Redemptions](/blog/redemptions)
+
 ## General
 
 - [In Memorium: Nikolai Mushegian (10/28/2023)](/blog/nikolai)
