@@ -39,7 +39,9 @@ Assets also exist **virtually** within the system, similar to dETH. There is a c
 
 ## dETH
 
-Because the system takes in multiple kinds of collateral, the system is denominated in dETH, an ERC-20 ETH stablecoin (similar to WETH) that represents a basket of ETH LSTs (Liquid Staking Tokens, like rETH and stETH). LSTs are the underlying collateral for dETH that bear yield due to Ethereum staking rewards.
+Because the system takes in multiple kinds of collateral, the system is denominated in dETH, which represents a basket of ETH LSTs (Liquid Staking Tokens, like rETH and stETH). LSTs are the underlying collateral for dETH that bear yield due to Ethereum staking rewards.
+
+Note: dETH only exists **virtually** (not as an ERC-20 balance). `VaultUser.ethEscrowed` is the internal variable that tracks dETH at a per user level.
 
 **dETH can be created in 2 ways**:
 
@@ -49,8 +51,6 @@ Because the system takes in multiple kinds of collateral, the system is denomina
 **dETH can be redeemed**:
 
 - Withdraw to stETH/rETH directly (subject to fees)
-
-Because dETH within the system exists **virtually** (not as an ERC-20 balance), dETH is only minted when withdrawing outside the system and only burned when depositing into the system. `VaultUser.ethEscrowed` is the internal variable that tracks dETH at a per user level.
 
 > Given that each `Vault` in the future may have different underlying collaterals and risk profiles, there needs to be a mechanism in place to move between vaults. One approach is to do a conversion when migrating collateral between vaults. The other is to create a separate dETH per vault which has it's own value (this is already supported but not used since the system will only start off with a single vault and thus a single dETH).
 

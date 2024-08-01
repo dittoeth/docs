@@ -6,7 +6,6 @@
 
 ## Tokens
 
-- [dETH](https://etherscan.io/address/0xd1770004661852cbC0B317c7775f4fA22E6bC60A#code): `0xd1770004661852cbC0B317c7775f4fA22E6bC60A`
 - [Ditto](https://etherscan.io/address/0xD177000D71aB154CA6B75f42Be53c18e0b7148F7#code): `0xD177000D71aB154CA6B75f42Be53c18e0b7148F7`
 - [dUSD](https://etherscan.io/address/0xD177000a2BC4F4d2246F0527Ad74Fd4140e029fd#code): `0xD177000a2BC4F4d2246F0527Ad74Fd4140e029fd`
 
