@@ -20,7 +20,7 @@ hero:
       text: Contract Addresses
       link: /contracts
     - theme: brand
-      text: Latest Audit (Code4rena - July 2024)
+      text: Latest Audit (C4 Invitational - July 2024)
       link: https://code4rena.com/audits/2024-07-dittoeth-invitational
     - theme: brand
       text: Audits
