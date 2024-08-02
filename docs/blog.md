@@ -1,6 +1,7 @@
 ### New Features
 
 - [#1: Redemptions](/blog/redemptions)
+- [#2: Interest Rate Yield](/blog/interest_rate)
 
 ### General
 
