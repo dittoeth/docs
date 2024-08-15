@@ -183,10 +183,6 @@ function sidebar(): DefaultTheme.SidebarItem[] {
           link: "/technical/redemptions"
         },
         {
-          text: "ShortRecord NFT",
-          link: "/technical/nft",
-        },
-        {
           text: "Arbitrage",
           link: "/technical/arbitrage"
         },

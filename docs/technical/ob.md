@@ -125,31 +125,30 @@ If `initialCR` is 2, shorters are providing 2x as much dETH as the bidder (1x dE
 
 - `collateral`: `uint88` is a max of 300m. collateral is denominated in ETH.
 - `ercDebt`: `uint88` to match `Order.ercAmount`.
+- `dethYieldRate`: Tracks the current yield rate for this `shortRecord`, which is updated with `distributeYield`.
 - `status`: `uint8` enum to show whether a short is partially filled (meaning there is still a corresponding short order that isn't completely filled on the orderbook), filled, or closed.
 - `id`, `prevId`, `nextId`: id, uses `uint8` (255). Similar to order id but because this is per address, doesn't need to be so large.
-- `dethYieldRate`: `uint80` is a max of 1.2m. Tracks the current yield rate for this `shortRecord`, which is updated with `distributeYield`.
 - `ercDebtRate`: `uint64` is a max of 18x. Tracks if a penalty needs to be applied across all `shortRecords` if the system isn't able to handle the debt.
-- `tokenId`: `uint40` is a max of 1T (no decimals since it's a count). Used to track which NFT a `shortRecord` corresponds with.
 - `updatedAt`: `uint32` holds seconds. This tracks the last time a `shortRecord` was modified (created, increaseCollateral, etc) to determine yield eligibility as a defense against exploitative flash loans.
+- `ercDebtFee`: `uint88` is a max of 300m. This separately tracks the fee (already accounted for in ercDebt), so it's not compounded.
 
 ```solidity
 // 2 slots
 // @dev dethYieldRate should match Vault
 struct ShortRecord {
-    // SLOT 1: 88 + 88 + 80 = 256
-    uint88 collateral; // price * ercAmount * initialCR
-    uint88 ercDebt; // same as Order.ercAmount
-    uint80 dethYieldRate;
-    // SLOT 2: 64 + 40 + 32 + 8 + 8 + 8 + 8 = 168 (88 remaining)
-    SR status;
-    uint8 prevId;
-    uint8 id;
-    uint8 nextId;
-    uint64 ercDebtRate; // socialized penalty rate
-    uint32 updatedAt; // seconds
-    // uint32 proposedAt; // seconds
-    // uint88 ercRedeemed;
-    uint40 tokenId; // As of 2023, Ethereum had ~2B total tx. Uint40 max value is 1T, which is more than enough
+  // SLOT 1: 88 + 88 + 80 = 256
+  uint88 collateral; // price * ercAmount * initialCR
+  uint88 ercDebt; // same as Order.ercAmount
+  uint80 dethYieldRate;
+  // SLOT 2: 88 + 80 + 32 + 8 + 8 + 8 + 8 = 216 (24 remaining)
+  SR status;
+  uint8 prevId;
+  uint8 id;
+  uint8 nextId;
+  uint80 ercDebtRate; // socialized penalty rate
+  uint32 updatedAt; // seconds
+  uint88 ercDebtFee;
+  uint24 filler1;
 }
 ```
 

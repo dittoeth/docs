@@ -8,30 +8,34 @@
 
 - [Ditto](https://etherscan.io/address/0xD177000D71aB154CA6B75f42Be53c18e0b7148F7#code): `0xD177000D71aB154CA6B75f42Be53c18e0b7148F7`
 - [dUSD](https://etherscan.io/address/0xD177000a2BC4F4d2246F0527Ad74Fd4140e029fd#code): `0xD177000a2BC4F4d2246F0527Ad74Fd4140e029fd`
+- [yDUSD](https://etherscan.io/address/0xD1770005ec30B67A7637229f96CDe73f132A285E#code): `0xD1770005ec30B67A7637229f96CDe73f132A285E`
 
 ## Bridges
 
-- [BridgeReth](https://etherscan.io/address/0x769a9041f96e29408ebB6Fd4Ce999AF852Dbf9aE#code): `0x769a9041f96e29408ebB6Fd4Ce999AF852Dbf9aE`
-- [BridgeSteth](https://etherscan.io/address/0x364626644d2C5E34a6f27c1bab3DCb73D43E12fB#code): `0x364626644d2C5E34a6f27c1bab3DCb73D43E12fB`
+- [BridgeReth](https://etherscan.io/address/0xd177000f05f496ecf0cbd73b09f0c7c4018258d9#code): `0xd177000f05f496ecf0cbd73b09f0c7c4018258d9`
+- [BridgeSteth](https://etherscan.io/address/0xd177000dadcbda7fcbb05fed28bf0e8dba5fe474#code): `0xd177000dadcbda7fcbb05fed28bf0e8dba5fe474`
 
 ## Protocol Facets
 
-- [OwnerFacet](https://etherscan.io/address/0xCc7C8Eb5aDdEc694fC2EB29ae6c762D9ebCC9deb#code) `0xCc7C8Eb5aDdEc694fC2EB29ae6c762D9ebCC9deb`
-- [ViewFacet](https://etherscan.io/address/0x015992589c3FeCcD440e41761076E8b6Bb4a28ab#code) `0x015992589c3FeCcD440e41761076E8b6Bb4a28ab`
-- [YieldFacet](https://etherscan.io/address/0xf1ab188256Ad8001E0351a4FBEa32BB9E775F654#code) `0xf1ab188256Ad8001E0351a4FBEa32BB9E775F654`
-- [AskOrdersFacet](https://etherscan.io/address/0x9CB746De13a52d9418104F669a1CaE767B08D556#code) `0x9CB746De13a52d9418104F669a1CaE767B08D556`
-- [ShortOrdersFacet](https://etherscan.io/address/0x01b3A877C100A077124DD21e71969E1b89f2b489#code) `0x01b3A877C100A077124DD21e71969E1b89f2b489`
-- [BidOrdersFacet](https://etherscan.io/address/0x5f406F400425704B4B09afD9bb02c4bf9633ab8B#code) `0x5f406F400425704B4B09afD9bb02c4bf9633ab8B`
-- [OrdersFacet](https://etherscan.io/address/0xFccf894D0847E6e346d319aa2EF357309EC79012#code) `0xFccf894D0847E6e346d319aa2EF357309EC79012`
-- [ExitShortFacet](https://etherscan.io/address/0x19cC8BAbDBEa5d8FeF76286DBb807958b6918eBE#code) `0x19cC8BAbDBEa5d8FeF76286DBb807958b6918eBE`
-- [PrimaryLiquidationFacet](https://etherscan.io/address/0x75Cdd1046e54a3aadB60c546bC9c74154937d88a#code) `0x75Cdd1046e54a3aadB60c546bC9c74154937d88a`
-- [SecondaryLiquidationFacet](https://etherscan.io/address/0xFde724FDC1A34C205972F9f5aAe390E5fc1d384c#code) `0xFde724FDC1A34C205972F9f5aAe390E5fc1d384c`
-- [MarketShutdownFacet](https://etherscan.io/address/0xf7501aedAcE3F88dc5B4c3d6C7b0B673f45Bf8F0#code) `0xf7501aedAcE3F88dc5B4c3d6C7b0B673f45Bf8F0`
-- [VaultFacet](https://etherscan.io/address/0xFf73827eaA3A11255c19AdbA10b8f906bc54FA32#code) `0xFf73827eaA3A11255c19AdbA10b8f906bc54FA32`
-- [BridgeRouterFacet](https://etherscan.io/address/0xA127DD7D51E6B5fcbAd3073BB370a05D6C2698A2#code) `0xA127DD7D51E6B5fcbAd3073BB370a05D6C2698A2`
-- [ShortRecordFacet](https://etherscan.io/address/0xA13b6875971dA0D930Fd3fD93D44c1bE0fF44626#code) `0xA13b6875971dA0D930Fd3fD93D44c1bE0fF44626`
-- [TWAPFacet](https://etherscan.io/address/0x260D6d7a4eca2f387e36D71BdF5f168F287c9674#code) `0x260D6d7a4eca2f387e36D71BdF5f168F287c9674`
-- [ERC721Facet](https://etherscan.io/address/0xdE661826fAC9d3034F6166E46c70dDd92C73f34c#code) `0xdE661826fAC9d3034F6166E46c70dDd92C73f34c`
+- [OwnerFacet](https://etherscan.io/address/0x622a4557dee8e23890d65bee1e59c8232c15948f#code) `0x622a4557dee8e23890d65bee1e59c8232c15948f`
+- [ViewFacet](https://etherscan.io/address/0xee4e4f6acbecd7a2df532cc15f707d056ef38cc6#code) `0xee4e4f6acbecd7a2df532cc15f707d056ef38cc6`
+- [YieldFacet](https://etherscan.io/address/0x22e0f36a8404dab388adbcdbbf77cd2f6026ed1b#code) `0x22e0f36a8404dab388adbcdbbf77cd2f6026ed1b`
+- [AskOrdersFacet](https://etherscan.io/address/0x42118220A76c5723f3455c4bf866A5a5ed187aa7#code) `0x42118220A76c5723f3455c4bf866A5a5ed187aa7`
+- [ShortOrdersFacet](https://etherscan.io/address/0xe7f07a100d7768a8b591f9c0c112c1070094d9f8#code) `0xe7f07a100d7768a8b591f9c0c112c1070094d9f8`
+- [BidOrdersFacet](https://etherscan.io/address/0x50eb457fCA78abF7a68CB0AE0a6755509aB3Ad31#code) `0x50eb457fCA78abF7a68CB0AE0a6755509aB3Ad31`
+- [OrdersFacet](https://etherscan.io/address/0x2dbf8c23e37d7ddcc2d8789dbc784a4ef4f793b4#code) `0x2dbf8c23e37d7ddcc2d8789dbc784a4ef4f793b4`
+- [ExitShortFacet](https://etherscan.io/address/0xafFABf5237a3E5066D686e2b0E3568Cd8397D6eC#code) `0xafFABf5237a3E5066D686e2b0E3568Cd8397D6eC`
+- [PrimaryLiquidationFacet](https://etherscan.io/address/0x401b6122a05B85f449E632f757Ae622BcB197932#code) `0x401b6122a05B85f449E632f757Ae622BcB197932`
+- [SecondaryLiquidationFacet](https://etherscan.io/address/0xa513840df10f4fb95f8a2729b289a1200629e6e1#code) `0xa513840df10f4fb95f8a2729b289a1200629e6e1`
+- [MarketShutdownFacet](https://etherscan.io/address/0x10D5b78Ca2F4932E0baA8764fb8bA2A83f000323#code) `0x10D5b78Ca2F4932E0baA8764fb8bA2A83f000323`
+- [VaultFacet](https://etherscan.io/address/0xfec35b6639b6e1297978dd947f891ab9703fba5b#code) `0xfec35b6639b6e1297978dd947f891ab9703fba5b`
+- [BridgeRouterFacet](https://etherscan.io/address/0x93d301E1D69400bFc6AAE440eB70B1A153ccde3E#code) `0x93d301E1D69400bFc6AAE440eB70B1A153ccde3E`
+- [ShortRecordFacet](https://etherscan.io/address/0x1891d9f5194c0c2ca6c4934b9f703af24fec3671#code) `0x1891d9f5194c0c2ca6c4934b9f703af24fec3671`
+- [TWAPFacet](https://etherscan.io/address/0xe8916938f99ECeeF6Cb6eBb07c661EeACb176f10#code) `0xe8916938f99ECeeF6Cb6eBb07c661EeACb176f10`
+- [ProposeRedemptionFacet](https://etherscan.io/address/0xb6f8602393c8507398f756a5d05796e185a7b17a#code): `0xb6f8602393c8507398f756a5d05796e185a7b17a`
+- [ClaimRedemptionFacet](https://etherscan.io/address/0xD0C2d55649CD48d9C7277DeE6cc6bBbDFa214f64#code): `0xD0C2d55649CD48d9C7277DeE6cc6bBbDFa214f64`
+- [DisputeRedemptionFacet](https://etherscan.io/address/0x7f79Fe1e86226C526831CBCa0Bd57bfF86A6F23E#code): `0x7f79Fe1e86226C526831CBCa0Bd57bfF86A6F23E`
+- [ViewRedemptionFacet](https://etherscan.io/address/0x4da4eb953c4a5044f46e3037d33eea7295a04ec9#code): `0x4da4eb953c4a5044f46e3037d33eea7295a04ec9`
 
 ## Diamond Facets
 
