@@ -9,6 +9,7 @@
 - [DittoETH launches: A Homage to Bitcoin (10/31/2023)](/blog/bitcoin_day)
 - [DittoDAO live on Bitcoin Genesis Block Day (01/03/2024)](/blog/genesis)
 - [Happy Birthday Satoshi: Why anon? (05/04/2024)](/blog/anon)
+- [Refreshing DittoETH (08/15/2024)](/blog/refresh)
 
 ### DittoETH Introductory Series
 

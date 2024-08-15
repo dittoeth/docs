@@ -6,6 +6,8 @@ import Author from './Author.vue'
 
 <Author  />
 
+> May 4, 2024
+
 When Satoshi Nakamoto released Bitcoin, he chose to keep his identity anonymous. He was careful to cover his tracks, maintaining most of his contact with the public through the bitcointalk.org forums.
 
 Satoshi's anonymity gave people more reason to trust Bitcoin because it could be evaluated purely on its technical and philosophical merits. Another benefit of Satoshi's obscure identity and subsequent disappearance was the lack a distinct leader and therefore a scapegoat. No institution or federal agency could arrest and make an example of Satoshi before a criminal proceeding or court of public opinion. Without a target to drag before the cameras and media as their poster child for "why you should not create open source software that gives financial freedom to the people", the institutions in power had no one to take out their wrath upon.
