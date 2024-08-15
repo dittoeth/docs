@@ -26,8 +26,8 @@ hero:
       text: Audits
       link: /audits
     - theme: brand
-      text: Frontend (preview)
-      link: https://preview.dittoeth.com
+      text: Frontend
+      link: https://ui.dittoeth.com
 features:
   - title: Decentralized Stable Assets
     details: Use liquid staked ETH to over-collateralize stable assets like USD with support for future assets (EUR, GLD)

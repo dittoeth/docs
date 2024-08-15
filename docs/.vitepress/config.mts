@@ -73,6 +73,7 @@ export default defineConfig({
     socialLinks: [
       { icon: "github", link: "https://github.com/dittoeth/docs" },
       { icon: "twitter", link: "https://twitter.com/dittoproj" },
+      { icon: "discord", link: "hhttps://discord.gg/Tm7secrzUZ" },
     ],
 
     // footer: {}
@@ -111,7 +112,7 @@ function nav(): DefaultTheme.NavItem[] {
     },
     {
       text: "UI",
-      link: "https://preview.dittoeth.com",
+      link: "https://ui.dittoeth.com",
     },
   ];
 }
