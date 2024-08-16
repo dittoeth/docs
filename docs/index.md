@@ -17,17 +17,17 @@ hero:
       text: Technical Docs
       link: /technical/ob
     - theme: alt
-      text: Contract Addresses
-      link: /contracts
-    - theme: brand
-      text: Latest Audit (C4 Invitational - July 2024)
-      link: https://code4rena.com/audits/2024-07-dittoeth-invitational
-    - theme: brand
       text: Audits
       link: /audits
-    - theme: brand
-      text: Frontend
+    - theme: alt
+      text: UI
       link: https://ui.dittoeth.com
+    - theme: brand
+      text: "Latest Audit: C4 - July 2024"
+      link: https://code4rena.com/audits/2024-07-dittoeth-invitational
+    - theme: brand
+      text: "Latest Blog: Refreshing DittoETH"
+      link: /blog/refresh
 features:
   - title: Decentralized Stable Assets
     details: Use liquid staked ETH to over-collateralize stable assets like USD with support for future assets (EUR, GLD)

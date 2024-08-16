@@ -26,6 +26,7 @@ export default defineConfig({
         {
           text: "Overview",
           items: [
+            { text: "Blog", link: "/blog" },
             {
               text: "Litepaper",
               link: "/litepaper",

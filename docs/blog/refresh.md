@@ -45,7 +45,7 @@ This Recovery Mode will be important to ensure that the overall system is collat
 
 ---
 
-These upgrades were audited in various private and public Code4Arena and Codehawks contests. You can start using DittoETH with these features now. Stay tuned for our upcoming incentives program for those who use DittoETH.
+These upgrades were audited in various private and public Code4Arena and Codehawks [audits](/audits). You can start using DittoETH with these features now. Stay tuned for our upcoming incentives program for those who use DittoETH.
 
 -Ditto
 
