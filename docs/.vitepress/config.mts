@@ -147,6 +147,10 @@ function sidebar(): DefaultTheme.SidebarItem[] {
           text: "Audits",
           link: "/audits",
         },
+        {
+          text: "Subgraph",
+          link: "/subgraph"
+        }
       ],
     },
     {
