@@ -51,6 +51,10 @@ export default defineConfig({
               text: "Audits",
               link: "/audits",
             },
+            {
+              text: "Interviews",
+              link: "/interviews",
+            },
           ],
         },
         {
@@ -186,11 +190,11 @@ function sidebar(): DefaultTheme.SidebarItem[] {
         },
         {
           text: "Redemptions",
-          link: "/technical/redemptions"
+          link: "/technical/redemptions",
         },
         {
           text: "Arbitrage",
-          link: "/technical/arbitrage"
+          link: "/technical/arbitrage",
         },
         {
           text: "Black Swan",
