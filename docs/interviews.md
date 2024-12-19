@@ -5,3 +5,4 @@
 - [#3: Satyaki](/interviews/3_satyaki)
 - [#4: Nonseodion](/interviews/4_nonse)
 - [#5: Phuwanai Thummavet](/interviews/5_phuwanai)
+- [#6: Pashov](/interviews/6_pashov)
